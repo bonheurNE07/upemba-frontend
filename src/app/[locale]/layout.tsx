@@ -6,7 +6,7 @@ import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
 
 import { Providers } from "@/components/providers";
-import "./globals.css";
+import "@/app/globals.css";
 import { cn } from "@/lib/utils";
 
 // Native Binding of the Oxanium Typography strictly onto Shadcn's font-sans
@@ -16,6 +16,10 @@ export const metadata: Metadata = {
   title: "Upemba IoT Dashboard",
   description: "Machine Learning Edge Telemetry Visualizer",
 };
+
+export function generateStaticParams() {
+  return routing.locales.map((locale) => ({ locale }));
+}
 
 export default async function RootLayout({
   children,
@@ -38,10 +42,13 @@ export default async function RootLayout({
   return (
     <html
       lang={locale}
-      suppressHydrationWarning // Prevents Next-Themes injection flash errors
+      suppressHydrationWarning // Prevents Next-Themes injection flash errors natively
       className={cn("h-full", "antialiased", "font-sans", oxanium.variable)}
     >
-      <body className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300">
+      <body
+        suppressHydrationWarning // Prevents Grammarly extension injection crashes sequentially
+        className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300"
+      >
         <NextIntlClientProvider messages={messages}>
           <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
             {children}
