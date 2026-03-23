@@ -1,0 +1,35 @@
+name: Upemba Frontend Edge CI
+
+# Strictly trigger the structural linting matrices upon external pushes blocking corrupt framework injections natively
+on:
+  push:
+    branches: [ "main", "milestone-1-foundation", "milestone-2-auth" ]
+  pull_request:
+    branches: [ "main" ]
+
+jobs:
+  static-analysis-and-build:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - name: Checkout Frontend Repository Framework
+      uses: actions/checkout@v4
+      
+    - name: Bootstrap Node.js 22 Engine Matrix
+      uses: actions/setup-node@v4
+      with:
+        node-version: '22'
+        cache: 'npm'
+        
+    - name: Instanciate Strict Dependency Pipeline
+      run: npm ci
+      
+    - name: Verify Shadcn React Hook Form Linting Bounds
+      run: npm run lint
+      
+    - name: Mathematically Compile Next.js Server Components
+      run: npm run build
+      env:
+        # Automatically inject physical locahost parameters tracking the pipeline natively
+        NEXT_PUBLIC_API_URL: http://localhost:8000/api
+        NEXT_TELEMETRY_DISABLED: 1

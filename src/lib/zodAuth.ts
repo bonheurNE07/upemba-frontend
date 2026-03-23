@@ -11,7 +11,7 @@ export const registerSchema = z.object({
   email: z.string().email("Invalid corporate email protocol"),
   password: z.string().min(8, "Security key must be at least 8 characters").max(200),
   passwordConfirm: z.string(),
-  role: z.enum(["ADMIN", "TECHNICIAN", "RANGER"]).default("RANGER"),
+  role: z.enum(["ADMIN", "TECHNICIAN", "RANGER"]),
 }).refine((data) => data.password === data.passwordConfirm, {
   message: "Security keys must geometrically match",
   path: ["passwordConfirm"],
