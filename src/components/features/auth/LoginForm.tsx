@@ -10,9 +10,11 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 import { useMutation } from "@tanstack/react-query";
 import { apiClient } from "@/lib/axios";
 import { useRouter } from "@/i18n/routing";
+import { useTranslations } from "next-intl";
 
 export function LoginForm() {
   const router = useRouter();
+  const t = useTranslations("Auth");
 
   const form = useForm<LoginFormValues>({
     resolver: zodResolver(loginSchema),
@@ -30,7 +32,7 @@ export function LoginForm() {
       router.push("/dashboard");
     },
     onError: (error) => {
-      form.setError("root", { message: "Invalid gateway credentials physically rejected by API." });
+      form.setError("root", { message: t("loginError") });
     },
   });
 
@@ -41,16 +43,16 @@ export function LoginForm() {
   return (
     <Card className="border-border/50 bg-card/60 backdrop-blur-xl shadow-2xl transition-all hover:shadow-primary/5">
       <CardHeader className="space-y-2 text-center sm:text-left">
-        <CardTitle className="text-3xl font-bold tracking-tight">Access Gateway</CardTitle>
+        <CardTitle className="text-3xl font-bold tracking-tight">{t("loginTitle")}</CardTitle>
         <CardDescription className="text-base font-medium">
-          Authenticate directly to the Upemba Edge Diagnostic IoT clusters.
+          {t("loginDesc")}
         </CardDescription>
       </CardHeader>
       <CardContent>
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
           <div className="space-y-2">
             <Label htmlFor="username" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Admin ID
+              {t("usernameLabel")}
             </Label>
             <Input 
               id="username"
@@ -65,7 +67,7 @@ export function LoginForm() {
 
           <div className="space-y-2">
             <Label htmlFor="password" className="text-sm font-semibold uppercase tracking-wider text-muted-foreground">
-              Security Protocol
+              {t("passwordLabel")}
             </Label>
             <Input 
               id="password"
@@ -86,7 +88,7 @@ export function LoginForm() {
           )}
 
           <Button type="submit" className="w-full h-12 text-base font-bold shadow-lg shadow-primary/20" disabled={loginMutation.isPending}>
-             {loginMutation.isPending ? "Validating Handshake..." : "Initialize Session"}
+             {loginMutation.isPending ? t("loginLoading") : t("loginSubmit")}
           </Button>
         </form>
       </CardContent>

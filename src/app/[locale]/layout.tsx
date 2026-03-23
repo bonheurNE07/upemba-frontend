@@ -49,11 +49,11 @@ export default async function RootLayout({
         suppressHydrationWarning // Prevents Grammarly extension injection crashes sequentially
         className="min-h-full flex flex-col bg-background text-foreground transition-colors duration-300"
       >
-        <NextIntlClientProvider messages={messages}>
-          <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+        <Providers attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
+          <NextIntlClientProvider messages={messages}>
             {children}
-          </Providers>
-        </NextIntlClientProvider>
+          </NextIntlClientProvider>
+        </Providers>
       </body>
     </html>
   );
