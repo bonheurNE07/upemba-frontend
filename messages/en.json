@@ -1,10 +1,10 @@
 {
   "Index": {
-    "title": "Upemba IoT Edge Network",
-    "description": "Minimalist diagnostics interface orchestrating live telemetry arrays globally.",
+    "title": "Upemba IoT Edge Portal",
+    "description": "A minimalist diagnostic gateway orchestrating real-time telemetry arrays globally.",
     "loginBtn": "Initialize Session",
     "registerBtn": "Request Clearance",
-    "footerText": "Powered by Scikit-Learn Isolation Forests & Mosquitto MQTT"
+    "footerText": "Optimized by Scikit-Learn Isolation Forest algorithms & the Mosquitto MQTT protocol"
   },
   "Auth": {
     "loginTitle": "Access Gateway",

@@ -1,10 +1,10 @@
 {
   "Index": {
-    "title": "Réseau Edge Upemba IoT",
-    "description": "Interface de diagnostic minimaliste orchestrant les matrices de télémétrie en direct mondialement.",
+    "title": "Portail Edge Upemba IoT",
+    "description": "Plateforme de diagnostic haute performance orchestrant l'analyse en temps réel de nos flux de télémétrie.",
     "loginBtn": "Initialiser la Session",
     "registerBtn": "Demander l'Accès",
-    "footerText": "Propulsé par Scikit-Learn Isolation Forests & Mosquitto MQTT"
+    "footerText": "Optimisé par les algorithmes d'Isolation Forest (Scikit-Learn) & le protocole Mosquitto MQTT"
   },
   "Auth": {
     "loginTitle": "Passerelle d'Accès",
