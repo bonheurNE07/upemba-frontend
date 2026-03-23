@@ -1,6 +1,29 @@
 {
   "Index": {
-    "title": "Upemba Edge Diagnostics",
-    "description": "Autonomous Machine Learning telemetry and predictive maintenance."
+    "title": "Upemba IoT Edge Network",
+    "description": "Minimalist diagnostics interface orchestrating live telemetry arrays globally.",
+    "loginBtn": "Initialize Session",
+    "registerBtn": "Request Clearance",
+    "footerText": "Powered by Scikit-Learn Isolation Forests & Mosquitto MQTT"
+  },
+  "Auth": {
+    "loginTitle": "Access Gateway",
+    "loginDesc": "Authenticate directly to the Upemba Edge Diagnostic IoT clusters.",
+    "registerTitle": "Request Clearance",
+    "registerDesc": "Register your physical identity to gain localized Node access.",
+    "usernameLabel": "Admin ID",
+    "passwordLabel": "Security Protocol",
+    "emailLabel": "Corporate Email",
+    "nameLabel": "Full Name",
+    "confirmPasswordLabel": "Confirm Key",
+    "loginSubmit": "Initialize Session",
+    "loginLoading": "Validating Handshake...",
+    "registerSubmit": "Generate Handshake",
+    "registerLoading": "Validating Protocol...",
+    "unauthorizedText": "Strictly authorized edge personnel only.",
+    "noAccessText": "No gateway access?",
+    "haveAccessText": "Already have gateway access?",
+    "loginError": "Invalid gateway credentials physically rejected by API.",
+    "registerError": "Clearance rejected. API payload structural conflict."
   }
 }

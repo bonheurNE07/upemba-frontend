@@ -1,6 +1,29 @@
 {
   "Index": {
-    "title": "Upemba Diagnostics Périphériques",
-    "description": "Télémétrie d'apprentissage automatique et maintenance prédictive autonome."
+    "title": "Réseau Edge Upemba IoT",
+    "description": "Interface de diagnostic minimaliste orchestrant les matrices de télémétrie en direct mondialement.",
+    "loginBtn": "Initialiser la Session",
+    "registerBtn": "Demander l'Accès",
+    "footerText": "Propulsé par Scikit-Learn Isolation Forests & Mosquitto MQTT"
+  },
+  "Auth": {
+    "loginTitle": "Passerelle d'Accès",
+    "loginDesc": "Authentifiez-vous directement aux clusters IoT Diagnostics Edge Upemba.",
+    "registerTitle": "Demande d'Accès",
+    "registerDesc": "Enregistrez votre identité physique pour obtenir l'accès localisé au Nœud.",
+    "usernameLabel": "ID Administrateur",
+    "passwordLabel": "Protocole de Sécurité",
+    "emailLabel": "Email d'Entreprise",
+    "nameLabel": "Nom Complet",
+    "confirmPasswordLabel": "Confirmer la Clé",
+    "loginSubmit": "Initialiser la Session",
+    "loginLoading": "Validation de la Connexion...",
+    "registerSubmit": "Générer la Connexion",
+    "registerLoading": "Validation du Protocole...",
+    "unauthorizedText": "Uniquement réservé au personnel périphérique strictement autorisé.",
+    "noAccessText": "Pas d'accès à la passerelle ?",
+    "haveAccessText": "Vous avez déjà l'accès à la passerelle ?",
+    "loginError": "Identifiants invalides rejetés physiquement par l'API.",
+    "registerError": "Accès refusé. Conflit structurel de la charge utile de l'API."
   }
 }
