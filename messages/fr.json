@@ -25,5 +25,14 @@
     "haveAccessText": "Vous avez déjà l'accès à la passerelle ?",
     "loginError": "Identifiants invalides rejetés physiquement par l'API.",
     "registerError": "Accès refusé. Conflit structurel de la charge utile de l'API."
+  },
+  "Sidebar": {
+    "title": "UPEMBA EDGE",
+    "subtitle": "Hub de Diagnostics",
+    "telemetry": "Télémétrie",
+    "logs": "Journaux Système",
+    "equipment": "Équipements",
+    "settings": "Paramètres",
+    "logout": "Terminer la Session"
   }
 }

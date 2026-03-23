@@ -25,5 +25,14 @@
     "haveAccessText": "Already have gateway access?",
     "loginError": "Invalid gateway credentials physically rejected by API.",
     "registerError": "Clearance rejected. API payload structural conflict."
+  },
+  "Sidebar": {
+    "title": "UPEMBA EDGE",
+    "subtitle": "Diagnostics Hub",
+    "telemetry": "Telemetry",
+    "logs": "System Logs",
+    "equipment": "Equipment",
+    "settings": "Settings",
+    "logout": "Terminate Session"
   }
 }
