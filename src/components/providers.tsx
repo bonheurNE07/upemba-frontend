@@ -3,8 +3,8 @@
 import * as React from "react";
 import { ThemeProvider as NextThemesProvider } from "next-themes";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { TooltipProvider } from "@/components/ui/tooltip";
 
-// Maintain the instance structurally to prevent React re-renders from destroying the cache
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -18,7 +18,9 @@ export function Providers({ children, ...props }: React.ComponentProps<typeof Ne
   return (
     <NextThemesProvider {...props}>
       <QueryClientProvider client={queryClient}>
-        {children}
+        <TooltipProvider>
+          {children}
+        </TooltipProvider>
       </QueryClientProvider>
     </NextThemesProvider>
   );
