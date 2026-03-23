@@ -1,65 +1,50 @@
-import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import { Link } from "@/i18n/routing";
+import { Button } from "@/components/ui/button";
 
-export default function Home() {
+export default async function HomePage() {
+  // Extract strictly the Server Component localized JSON arrays inherently mapped in 'messages/en.json'
+  const t = await getTranslations("Index");
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <main className="flex min-h-screen flex-col items-center justify-center bg-background px-6 relative overflow-hidden">
+      {/* Decorative Minimalist Lighting Vectors - Severely Translucent to perfectly match the Nova aesthetic */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[400px] sm:w-[800px] sm:h-[600px] bg-primary/5 rounded-[100%] blur-[100px] pointer-events-none" />
+
+      <div className="z-10 w-full max-w-4xl text-center flex flex-col items-center">
+        {/* Radar/Telemetry Minimalist Pulsing Icon strictly adhering to IoT themes */}
+        <div className="mb-8 inline-flex p-4 rounded-full bg-primary/10">
+          <div className="w-16 h-16 rounded-full border border-primary/20 flex items-center justify-center">
+            <div className="w-4 h-4 rounded-full bg-primary shadow-[0_0_20px_rgba(var(--primary),1)] animate-ping" />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+        {/* Global Translated Heading */}
+        <h1 className="text-5xl sm:text-6xl md:text-7xl font-black tracking-tighter text-foreground mb-6 drop-shadow-sm">
+          {t("title")}
+        </h1>
+        
+        {/* Global Translated Description text gracefully omitting visual clatter */}
+        <p className="text-xl sm:text-2xl text-muted-foreground font-medium max-w-2xl mx-auto mb-14 leading-relaxed">
+          {t("description")}
+        </p>
+
+        {/* Action Group Routing Geometry completely isolating standard Nav bars */}
+        <div className="flex flex-col sm:flex-row items-center justify-center gap-6 w-full sm:w-auto">
+          <Button asChild size="lg" className="h-16 px-10 text-xl font-bold w-full sm:w-auto shadow-xl shadow-primary/20 transition-transform active:scale-95">
+            <Link href="/login">Initialize Session</Link>
+          </Button>
+
+          <Button asChild variant="outline" size="lg" className="h-16 px-10 text-xl font-bold w-full sm:w-auto bg-transparent border-2 border-primary/20 hover:bg-primary/5 transition-all active:scale-95">
+            <Link href="/register">Request Clearance</Link>
+          </Button>
         </div>
-      </main>
-    </div>
+
+        {/* Hardware Acknowledgment Subtext */}
+        <div className="mt-24 text-sm font-semibold tracking-widest text-muted-foreground uppercase opacity-40">
+          Powered by Scikit-Learn Isolation Forests & Mosquitto MQTT
+        </div>
+      </div>
+    </main>
   );
 }
