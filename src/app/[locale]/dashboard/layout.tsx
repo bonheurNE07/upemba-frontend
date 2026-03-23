@@ -1,5 +1,6 @@
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
 import { AppSidebar } from "@/components/features/dashboard/AppSidebar";
+import { TopNav } from "@/components/features/dashboard/TopNav";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -9,15 +10,14 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         <header className="sticky top-0 z-10 flex h-16 shrink-0 items-center justify-between gap-4 border-b border-border/40 bg-background/95 backdrop-blur px-6">
           <div className="flex items-center gap-4">
             <SidebarTrigger className="-ml-2 hover:bg-primary/10 transition-colors" />
-            <div className="hidden sm:flex items-center text-sm font-medium text-muted-foreground uppercase tracking-widest">
-              {/* Breadcrumb Matrix placeholder */}
-              UPEMBA // Edge Node
+            <div className="hidden sm:flex items-center text-sm font-bold tracking-widest gap-2">
+              <span className="text-foreground uppercase">UPEMBA</span>
+              <span className="text-muted-foreground/40">//</span>
+              <span className="text-muted-foreground uppercase">Edge Node</span>
             </div>
           </div>
           
-          <div className="flex items-center gap-4">
-             {/* Dynamic TopNav contextual rendering placeholder */}
-          </div>
+          <TopNav />
         </header>
         
         <div className="flex-1 p-6 md:p-10">
