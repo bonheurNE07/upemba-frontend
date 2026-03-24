@@ -12,6 +12,8 @@ import { apiClient } from "@/lib/axios";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
+import Cookies from "js-cookie";
+
 export function RegisterForm() {
   const router = useRouter();
   const t = useTranslations("Auth");
@@ -32,11 +34,14 @@ export function RegisterForm() {
 
   const registerMutation = useMutation({
     mutationFn: async (credentials: RegisterFormValues) => {
-      const response = await apiClient.post("/dj-rest-auth/registration/", credentials);
+      const { passwordConfirm, ...submitData } = credentials;
+      // Note: This endpoint must be manually constructed in Django (e.g., via `djoser` or custom views)
+      const response = await apiClient.post("/register/", submitData);
       return response.data;
     },
-    onSuccess: (data) => {
-      router.push("/dashboard");
+    onSuccess: (data: any, variables: RegisterFormValues) => {
+      // Force redirect to the Activation Route carrying the email implicitly
+      router.push(`/activation?email=${encodeURIComponent(variables.email)}`);
     },
     onError: (error) => {
       form.setError("root", { message: t("registerError") });
