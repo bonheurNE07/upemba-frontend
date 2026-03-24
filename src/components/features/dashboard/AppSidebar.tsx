@@ -1,7 +1,7 @@
 "use client";
 
 import { useTranslations } from "next-intl";
-import { Link, usePathname } from "@/i18n/routing";
+import { Link, usePathname, useRouter } from "@/i18n/routing";
 import { Activity, TerminalSquare, Cpu, Settings, LogOut, RadioTower } from "lucide-react";
 import { 
   Sidebar, 
@@ -13,10 +13,31 @@ import {
   SidebarMenuItem,
   SidebarMenuButton
 } from "@/components/ui/sidebar";
+import { useQuery } from "@tanstack/react-query";
+import { apiClient } from "@/lib/axios";
+import Cookies from "js-cookie";
 
 export function AppSidebar() {
   const t = useTranslations("Sidebar");
   const pathname = usePathname();
+  const router = useRouter();
+
+  // Dynamically resolve the native Edge User Identity payload through Next.js geometric query trees
+  const { data: user } = useQuery({
+    queryKey: ['user', 'me'],
+    queryFn: async () => {
+      const response = await apiClient.get("/users/me/");
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 5, // Cache profile strictly for 5 minutes
+  });
+
+  const terminateSession = () => {
+    Cookies.remove("auth_token", { path: "/" });
+    Cookies.remove("access_token", { path: "/" });
+    Cookies.remove("refresh_token", { path: "/" });
+    router.push("/login");
+  };
 
   const navItems = [
     { title: t("telemetry"), url: "/dashboard", icon: Activity },
@@ -62,8 +83,8 @@ export function AppSidebar() {
         </SidebarGroup>
       </SidebarContent>
 
-      <SidebarFooter className="border-t border-border/40 p-4 space-y-2">
-        <SidebarMenu>
+      <SidebarFooter className="border-t border-border/40 p-4 space-y-4">
+        <SidebarMenu className="space-y-2">
           <SidebarMenuItem>
             <SidebarMenuButton render={<Link href="/dashboard/settings" />} tooltip={t("settings")} className="h-10 data-[active=true]:bg-sidebar-accent">
               <Settings className={pathname === "/dashboard/settings" ? "text-primary" : "text-muted-foreground"} />
@@ -73,12 +94,38 @@ export function AppSidebar() {
             </SidebarMenuButton>
           </SidebarMenuItem>
           <SidebarMenuItem>
-            <SidebarMenuButton tooltip={t("logout")} className="h-10 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors">
+            <SidebarMenuButton onClick={terminateSession} tooltip={t("logout")} className="h-10 text-destructive hover:bg-destructive/10 hover:text-destructive transition-colors">
               <LogOut className="text-destructive mt-0.5" />
               <span className="font-bold tracking-wide">{t("logout")}</span>
             </SidebarMenuButton>
           </SidebarMenuItem>
         </SidebarMenu>
+
+        <div className="pt-2 border-t border-border/30">
+        {user ? (
+          <div className="flex items-center gap-3 overflow-hidden rounded-md group hover:bg-sidebar-accent p-1.5 transition-colors">
+            <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-md bg-primary/10 text-primary font-bold shadow-sm ring-1 ring-primary/20">
+              {user.username?.charAt(0).toUpperCase()}
+            </div>
+            <div className="flex flex-col overflow-hidden leading-tight">
+              <span className="truncate text-sm font-bold text-foreground tracking-wide">
+                {user.name || user.username}
+              </span>
+              <span className="truncate text-xs font-semibold text-muted-foreground">
+                {user.email || "Edge CLI Operator"}
+              </span>
+            </div>
+          </div>
+        ) : (
+          <div className="flex items-center gap-3 p-1.5 opacity-50">
+            <div className="h-9 w-9 shrink-0 animate-pulse rounded-md bg-muted" />
+            <div className="flex flex-col gap-1.5 w-full">
+              <div className="h-3 w-20 animate-pulse rounded bg-muted" />
+              <div className="h-2 w-24 animate-pulse rounded bg-muted" />
+            </div>
+          </div>
+        )}
+        </div>
       </SidebarFooter>
     </Sidebar>
   );

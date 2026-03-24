@@ -12,6 +12,8 @@ import { apiClient } from "@/lib/axios";
 import { useRouter } from "@/i18n/routing";
 import { useTranslations } from "next-intl";
 
+import Cookies from "js-cookie";
+
 export function LoginForm() {
   const router = useRouter();
   const t = useTranslations("Auth");
@@ -25,10 +27,15 @@ export function LoginForm() {
 
   const loginMutation = useMutation({
     mutationFn: async (credentials: LoginFormValues) => {
-      const response = await apiClient.post("/dj-rest-auth/login/", credentials);
+      // Native Django default endpoint utilizing standard DRF Token Authentication natively
+      const response = await apiClient.post("/auth-token/", credentials);
       return response.data;
     },
-    onSuccess: (data) => {
+    onSuccess: (data: any) => {
+      // Default DRF Token Payload dynamically isolated
+      if (data?.token) {
+        Cookies.set("auth_token", data.token, { path: "/", secure: process.env.NODE_ENV === "production" });
+      }
       router.push("/dashboard");
     },
     onError: (error) => {

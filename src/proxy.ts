@@ -10,8 +10,8 @@ export default function middleware(request: NextRequest) {
 
   // Strict Middleware Protection: Bounce unauthenticated traffic accessing the core dashboards
   if (pathname.includes('/dashboard')) {
-    // We check for the explicit dj-rest-auth cookie or custom JWT payload
-    const token = request.cookies.get('access_token') || request.cookies.get('sessionid');
+    // We check for the explicit drf auth token or legacy JWT payloads
+    const token = request.cookies.get('auth_token') || request.cookies.get('access_token');
     
     if (!token) {
       // Calculate the active localization strictly before redirecting
