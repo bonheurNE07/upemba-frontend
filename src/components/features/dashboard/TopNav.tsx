@@ -5,6 +5,7 @@ import { useFormatter } from "next-intl";
 import { useTheme } from "next-themes";
 import { Moon, Sun, Monitor } from "lucide-react";
 import { Button } from "@/components/ui/button";
+import { GlobalHealthLeds } from "./telemetry/GlobalHealthLeds";
 
 export function TopNav() {
   const [mounted, setMounted] = useState(false);
@@ -38,6 +39,8 @@ export function TopNav() {
 
   return (
     <div className="flex items-center gap-4">
+      <GlobalHealthLeds />
+      
       {/* Natively utilize next-intl to format live dates adapting securely to EN/FR locales */}
       <div className="hidden sm:flex items-center text-sm font-bold tracking-wider text-muted-foreground mr-2 capitalize">
         {format.dateTime(currentTime, {
