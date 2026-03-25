@@ -1,3 +1,4 @@
+import { strict } from 'assert';
 import { apiClient } from '../axios';
 import { z } from 'zod';
 
@@ -8,6 +9,15 @@ export interface HealthStatus {
   anomaly_score: number;
   status: 'NORMAL' | 'WARNING' | 'CRITICAL';
   prediction_timestamp: string;
+}
+
+export interface Equipment {
+  id: number;
+  name: string;
+  equipment_type: string;
+  mac_address: string;
+  location_notes: string;
+  is_active: boolean;
 }
 
 export interface SensorReading {
@@ -21,38 +31,81 @@ export interface SensorReading {
   timestamp: string;
 }
 
-export interface PaginatedResponse<T> {
-  count: number;
-  next: string | null;
-  previous: string | null;
-  results: T[];
-}
 
-// Fetch all health statuses
-export const getHealthStatuses = async (): Promise<HealthStatus[]> => {
-  const response = await apiClient.get<HealthStatus[]>('/telemetry/health-statuses/');
-  // Django ViewSets often return paginated endpoints unless unpaginated
-  // Let's assume standard unpaginated or handle results if paginated:
-  if ('results' in response.data) {
-    return (response.data as any).results;
+export const getEquipments = async (search?: string): Promise<Equipment[]> => {
+  try {
+    const params = search ? { search } : {};
+    const response = await apiClient.get<Equipment[]>('/equipment/', { params });
+    console.log("[API] /equipment/ raw response:", response.data);
+    if (response.data && typeof response.data === 'object' && 'results' in response.data) {
+      return (response.data as any).results;
+    }
+    return response.data || [];
+  } catch (error: any) {
+    console.error("[API ERROR] /equipment/:", error.response?.data || error.message);
+    throw error;
   }
+};
+
+export const createEquipment = async (data: Partial<Equipment>): Promise<Equipment> => {
+  const response = await apiClient.post<Equipment>('/equipment/', data);
   return response.data;
 };
 
-// Fetch sensor readings for a specific equipment with pagination
+export const updateEquipment = async (id: number, data: Partial<Equipment>): Promise<Equipment> => {
+  const response = await apiClient.patch<Equipment>(`/equipment/${id}/`, data);
+  return response.data;
+};
+
+export const deleteEquipment = async (id: number): Promise<void> => {
+  await apiClient.delete(`/equipment/${id}/`);
+};
+
+// Fetch all health statuses (with optional filters)
+export const getHealthStatuses = async (
+  equipmentId?: number,
+  startDate?: string,
+  endDate?: string
+): Promise<HealthStatus[]> => {
+  const params: any = {};
+  if (equipmentId) params.equipment = equipmentId;
+  
+  // Start date inherently starts at 00:00:00, which is perfectly inclusive
+  if (startDate) params.start_date = startDate;
+  
+  // End date of '2026-03-25' translates to 00:00:00 in Django. 
+  // We must append 23:59:59 to include all logs that occurred during that day!
+  if (endDate) {
+    if (endDate.length === 10) {
+      params.end_date = `${endDate}T23:59:59.999Z`;
+    } else {
+      params.end_date = endDate;
+    }
+  }
+
+  const response = await apiClient.get<HealthStatus[]>('/health-status/', { params });
+  
+  if (response.data && typeof response.data === 'object' && 'results' in response.data) {
+    return (response.data as any).results;
+  }
+  return response.data || [];
+};
+
+// Fetch sensor readings for a specific equipment
 export const getSensorReadings = async (
-  equipmentId: number,
-  page: number = 1
-): Promise<PaginatedResponse<SensorReading>> => {
-  const response = await apiClient.get<PaginatedResponse<SensorReading>>('/telemetry/sensor-readings/', {
+  equipmentId: number
+): Promise<SensorReading[]> => {
+  const response = await apiClient.get<SensorReading[]>('/sensor-readings/', {
     params: {
       equipment: equipmentId,
-      page,
       ordering: '-timestamp', // Expect newest first
     },
   });
-  // Since we assume simple ViewSet without explicitly defined django-filter yet,
-  // we might need to handle filtering by equipment on the frontend if the backend doesn't support the param,
-  // but it's best practice to pass it as a query param.
-  return response.data;
+  
+  // In case the backend dynamically switches or wraps it, safely unwrap it
+  if (response.data && typeof response.data === 'object' && 'results' in response.data) {
+    return (response.data as any).results;
+  }
+  
+  return response.data || [];
 };
