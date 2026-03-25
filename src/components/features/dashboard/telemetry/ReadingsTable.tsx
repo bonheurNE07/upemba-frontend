@@ -1,18 +1,15 @@
 'use client';
 
 import { useSensorReadings } from '@/hooks/useTelemetry';
-import { Button } from '@/components/ui/button';
 import { format } from 'date-fns';
-import { useState } from 'react';
-import { ChevronLeft, ChevronRight, Activity } from 'lucide-react';
+import { Activity } from 'lucide-react';
 
 interface ReadingsTableProps {
   equipmentId: number | undefined;
 }
 
 export function ReadingsTable({ equipmentId }: ReadingsTableProps) {
-  const [page, setPage] = useState(1);
-  const { data, isLoading, isError } = useSensorReadings(equipmentId, page);
+  const { data, isLoading, isError } = useSensorReadings(equipmentId);
 
   if (!equipmentId) return null;
 
@@ -32,13 +29,13 @@ export function ReadingsTable({ equipmentId }: ReadingsTableProps) {
            <h3 className="text-sm font-bold tracking-widest uppercase">Historical Logs</h3>
         </div>
         <div className="text-xs text-muted-foreground">
-           Total records: {data.count}
+           Total records: {data.length}
         </div>
       </div>
       
-      <div className="overflow-x-auto">
+      <div className="overflow-y-auto overflow-x-auto max-h-[400px] relative">
         <table className="w-full text-sm text-left">
-          <thead className="text-xs text-muted-foreground uppercase bg-muted/10">
+          <thead className="text-xs text-muted-foreground uppercase bg-muted/10 sticky top-0 shadow-sm z-10">
             <tr>
               <th className="px-6 py-3 font-bold tracking-wider">Timestamp</th>
               <th className="px-6 py-3 font-bold tracking-wider text-right">Temperature (°C)</th>
@@ -49,19 +46,19 @@ export function ReadingsTable({ equipmentId }: ReadingsTableProps) {
             </tr>
           </thead>
           <tbody>
-            {data.results.map((reading) => (
+            {data.map((reading) => (
               <tr key={reading.id} className="border-b border-border/50 hover:bg-muted/5 transition-colors">
                 <td className="px-6 py-4 font-mono text-muted-foreground">
                   {format(new Date(reading.timestamp), 'yyyy-MM-dd HH:mm:ss')}
                 </td>
-                <td className="px-6 py-4 text-right font-medium">{reading.temperature.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium">{reading.voltage.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium">{reading.vib_x.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium">{reading.vib_y.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium">{reading.vib_z.toFixed(2)}</td>
+                <td className="px-6 py-4 text-right font-medium text-[#ef4444]">{reading.temperature.toFixed(2)}</td>
+                <td className="px-6 py-4 text-right font-medium text-[#3b82f6]">{reading.voltage.toFixed(2)}</td>
+                <td className="px-6 py-4 text-right font-medium text-[#a855f7]">{reading.vib_x.toFixed(2)}</td>
+                <td className="px-6 py-4 text-right font-medium text-[#eab308]">{reading.vib_y.toFixed(2)}</td>
+                <td className="px-6 py-4 text-right font-medium text-[#22c55e]">{reading.vib_z.toFixed(2)}</td>
               </tr>
             ))}
-            {data.results.length === 0 && (
+            {data.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
                   No telemetry data found for this equipment.
@@ -70,35 +67,6 @@ export function ReadingsTable({ equipmentId }: ReadingsTableProps) {
             )}
           </tbody>
         </table>
-      </div>
-
-      {/* Pagination Controls */}
-      <div className="flex items-center justify-between p-4 border-t border-border/50 bg-muted/10">
-        <div className="text-xs text-muted-foreground">
-          Page <span className="font-bold text-foreground">{page}</span>
-        </div>
-        <div className="flex items-center gap-2">
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => Math.max(1, p - 1))}
-            disabled={!data.previous}
-            className="h-8 shadow-none"
-          >
-            <ChevronLeft className="w-4 h-4 mr-1" />
-            Prev
-          </Button>
-          <Button
-            variant="outline"
-            size="sm"
-            onClick={() => setPage((p) => p + 1)}
-            disabled={!data.next}
-            className="h-8 shadow-none"
-          >
-            Next
-            <ChevronRight className="w-4 h-4 ml-1" />
-          </Button>
-        </div>
       </div>
     </div>
   );
