@@ -20,7 +20,7 @@ interface TelemetryChartsProps {
 }
 
 export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
-  const { data, isLoading } = useSensorReadings(equipmentId, 1);
+  const { data, isLoading } = useSensorReadings(equipmentId);
 
   if (!equipmentId) return null;
 
@@ -28,7 +28,7 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
     return <div className="h-[400px] w-full bg-muted animate-pulse rounded-xl" />;
   }
 
-  if (!data || data.results.length === 0) {
+  if (!data || data.length === 0) {
     return (
       <div className="h-[400px] flex items-center justify-center border border-border/50 rounded-xl bg-background/50 text-muted-foreground">
         No telemetry data to display charts.
@@ -37,7 +37,7 @@ export function TelemetryCharts({ equipmentId }: TelemetryChartsProps) {
   }
 
   // We want to show chronological order, so reverse the descending results for the chart
-  const chartData = [...data.results].reverse().map(reading => ({
+  const chartData = [...data].reverse().map(reading => ({
     time: format(new Date(reading.timestamp), 'HH:mm:ss'),
     temperature: reading.temperature,
     voltage: reading.voltage,
