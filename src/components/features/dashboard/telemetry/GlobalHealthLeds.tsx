@@ -1,8 +1,10 @@
 'use client';
 
+import { useMemo } from 'react';
 import { useHealthStatuses } from '@/hooks/useTelemetry';
 import { cn } from '@/lib/utils';
 import { AlertTriangle, CheckCircle, ShieldAlert } from 'lucide-react';
+import { HealthStatus } from '@/lib/api/telemetry';
 
 export function GlobalHealthLeds() {
   const { data: statuses, isLoading, isError } = useHealthStatuses();
@@ -15,10 +17,23 @@ export function GlobalHealthLeds() {
     </div>;
   }
 
-  const hasCritical = statuses?.some((s) => s.status === 'CRITICAL') || false;
-  const hasWarning = statuses?.some((s) => s.status === 'WARNING') || false;
-  // If no critical or warning, it's green (or if no statuses at all? assume green for empty)
-  const isAllGood = !hasCritical && !hasWarning;
+  // Extract only the absolute latest status per unique equipment in O(N) time
+  const latestStatuses = useMemo(() => {
+    if (!statuses) return [];
+    
+    // Using a Map prevents the O(N^2) performance freeze that happens with '.some()' inside a loop
+    const equipmentMap = new Map<number, HealthStatus>();
+    for (const status of statuses) {
+      if (!equipmentMap.has(status.equipment)) {
+        equipmentMap.set(status.equipment, status);
+      }
+    }
+    return Array.from(equipmentMap.values());
+  }, [statuses]);
+
+  const hasCritical = latestStatuses.some((s) => s.status === 'CRITICAL');
+  const hasWarning = latestStatuses.some((s) => s.status === 'WARNING');
+  const isAllGood = !hasCritical && !hasWarning && latestStatuses.length > 0;
 
   return (
     <div className="flex items-center gap-3 px-4 py-1.5 rounded-full border border-border/40 bg-background/50 shadow-sm backdrop-blur-sm">
