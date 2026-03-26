@@ -44,7 +44,7 @@ export function EquipmentTable() {
   };
 
   const renderHealthBadge = (equipmentId: number) => {
-    const status = healthStatuses?.find(h => h.equipment === equipmentId)?.status;
+    const status = healthStatuses?.results?.find(h => h.equipment === equipmentId)?.status;
     
     if (status === 'NORMAL') {
       return <span className="inline-flex items-center px-2 py-0.5 rounded text-xs font-semibold bg-green-500/20 text-green-500 border border-green-500/30">● NORMAL</span>;
@@ -86,12 +86,12 @@ export function EquipmentTable() {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="text-xs text-muted-foreground uppercase bg-muted/10 sticky top-0 shadow-sm z-10">
             <tr>
-              <th className="px-6 py-4 font-bold tracking-wider">Health</th>
-              <th className="px-6 py-4 font-bold tracking-wider">Node Name</th>
-              <th className="px-6 py-4 font-bold tracking-wider">Hardware Type</th>
-              <th className="px-6 py-4 font-bold tracking-wider">MAC / IP</th>
-              <th className="px-6 py-4 font-bold tracking-wider text-center">Active</th>
-              <th className="px-6 py-4 font-bold tracking-wider text-right">Actions</th>
+              <th className="px-4 sm:px-6 py-4 font-bold tracking-wider">Health</th>
+              <th className="px-4 sm:px-6 py-4 font-bold tracking-wider">Node</th>
+              <th className="hidden lg:table-cell px-6 py-4 font-bold tracking-wider">Type</th>
+              <th className="hidden md:table-cell px-6 py-4 font-bold tracking-wider">MAC / IP</th>
+              <th className="hidden sm:table-cell px-6 py-4 font-bold tracking-wider text-center">Active</th>
+              <th className="px-4 sm:px-6 py-4 font-bold tracking-wider text-right">Actions</th>
             </tr>
           </thead>
           <tbody>
@@ -110,19 +110,19 @@ export function EquipmentTable() {
             ) : (
               equipments?.map((eq) => (
                 <tr key={eq.id} className="border-b border-border/50 hover:bg-muted/5 transition-colors group">
-                  <td className="px-6 py-4 whitespace-nowrap">
+                  <td className="px-4 sm:px-6 py-4 whitespace-nowrap">
                     {renderHealthBadge(eq.id)}
                   </td>
-                  <td className="px-6 py-4 font-medium text-foreground">
+                  <td className="px-4 sm:px-6 py-4 font-medium text-foreground text-sm sm:text-base">
                     {eq.name}
                   </td>
-                  <td className="px-6 py-4 text-muted-foreground">
+                  <td className="hidden lg:table-cell px-6 py-4 text-muted-foreground text-sm">
                     {eq.equipment_type}
                   </td>
-                  <td className="px-6 py-4 font-mono text-xs text-muted-foreground bg-muted/20 rounded inline-flex mt-3 mb-1 ml-6 px-2 py-1">
-                    {eq.mac_address}
+                  <td className="hidden md:table-cell px-6 py-4 font-mono text-xs text-muted-foreground">
+                    <span className="bg-muted/20 rounded px-2 py-1">{eq.mac_address}</span>
                   </td>
-                  <td className="px-6 py-4 text-center">
+                  <td className="hidden sm:table-cell px-6 py-4 text-center">
                     {eq.is_active ? (
                       <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-500/10 text-green-500 border border-green-500/20">
                         Active

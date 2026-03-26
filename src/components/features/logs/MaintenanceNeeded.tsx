@@ -8,7 +8,7 @@ export function MaintenanceNeeded() {
   const { data: healthStatuses } = useHealthStatuses();
 
   const hardwareNeedingMaintenance = equipments?.filter(eq => {
-    const status = healthStatuses?.find(h => h.equipment === eq.id)?.status;
+    const status = healthStatuses?.results?.find(h => h.equipment === eq.id)?.status;
     return status === 'WARNING' || status === 'CRITICAL';
   }) || [];
 
@@ -33,14 +33,14 @@ export function MaintenanceNeeded() {
           <AlertTriangle className="w-5 h-5 text-amber-500" />
         </div>
         <div>
-          <h4 className="text-sm font-bold text-amber-600 dark:text-amber-500">Maintenance Action Required</h4>
-          <p className="text-xs text-amber-600/80 dark:text-amber-500/80 mt-0.5">Machine Learning models have flagged the following nodes as exhibiting anomalous behavior.</p>
+          <h4 className="text-sm font-bold text-amber-600 dark:text-amber-500 uppercase tracking-widest">Predictive Maintenance Required</h4>
+          <p className="text-[10px] text-amber-600/80 dark:text-amber-500/80 mt-0.5 uppercase font-medium">ML Failure Risk: Our diagnostics models have flagged the following nodes as exhibiting high-risk behavior patterns.</p>
         </div>
       </div>
       
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
         {hardwareNeedingMaintenance.map(eq => {
-          const status = healthStatuses?.find(h => h.equipment === eq.id)?.status;
+          const status = healthStatuses?.results?.find(h => h.equipment === eq.id)?.status;
           const isCritical = status === 'CRITICAL';
           return (
             <div 

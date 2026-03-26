@@ -19,25 +19,25 @@ export function GlobalHealthLeds() {
 
   // Extract only the absolute latest status per unique equipment in O(N) time
   const latestStatuses = useMemo(() => {
-    if (!statuses) return [];
+    if (!statuses?.results) return [];
     
     // Using a Map prevents the O(N^2) performance freeze that happens with '.some()' inside a loop
     const equipmentMap = new Map<number, HealthStatus>();
-    for (const status of statuses) {
+    for (const status of statuses.results) {
       if (!equipmentMap.has(status.equipment)) {
         equipmentMap.set(status.equipment, status);
       }
     }
     return Array.from(equipmentMap.values());
-  }, [statuses]);
+  }, [statuses?.results]);
 
   const hasCritical = latestStatuses.some((s) => s.status === 'CRITICAL');
   const hasWarning = latestStatuses.some((s) => s.status === 'WARNING');
   const isAllGood = !hasCritical && !hasWarning && latestStatuses.length > 0;
 
   return (
-    <div className="flex items-center gap-3 px-4 py-1.5 rounded-full border border-border/40 bg-background/50 shadow-sm backdrop-blur-sm">
-      <div className="text-xs font-bold tracking-widest text-muted-foreground mr-2">SYS_STATUS</div>
+    <div className="flex items-center gap-2 sm:gap-3 px-2 sm:px-4 py-1.5 rounded-full border border-border/40 bg-background/50 shadow-sm backdrop-blur-sm">
+      <div className="hidden md:block text-[10px] font-bold tracking-widest text-muted-foreground mr-2">PREDICTIVE_ML</div>
       
       {/* GREEN LED */}
       <div className={cn(

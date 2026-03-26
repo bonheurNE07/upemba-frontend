@@ -1,4 +1,5 @@
 import { apiClient } from '../axios';
+import { PaginatedResponse } from './types';
 
 export interface MaintenanceLog {
   id: number;
@@ -10,29 +11,25 @@ export interface MaintenanceLog {
   timestamp: string;
 }
 
-export const getLogs = async (equipmentId?: number, startDate?: string, endDate?: string): Promise<MaintenanceLog[]> => {
-  try {
-    const params: Record<string, any> = {};
-    if (equipmentId) params.equipment = equipmentId;
-    if (startDate) params.start_date = startDate;
-    if (endDate) {
-      if (endDate.length === 10) {
-        params.end_date = `${endDate}T23:59:59.999Z`;
-      } else {
-        params.end_date = endDate;
-      }
+export const getLogs = async (
+  equipmentId?: number, 
+  startDate?: string, 
+  endDate?: string,
+  page: number = 1
+): Promise<PaginatedResponse<MaintenanceLog>> => {
+  const params: Record<string, any> = { page };
+  if (equipmentId) params.equipment = equipmentId;
+  if (startDate) params.start_date = startDate;
+  if (endDate) {
+    if (endDate.length === 10) {
+      params.end_date = `${endDate}T23:59:59.999Z`;
+    } else {
+      params.end_date = endDate;
     }
-
-    const response = await apiClient.get<MaintenanceLog[]>('/maintenance-logs/', { params });
-    // Handle Django paginated responses if enabled, otherwise raw array
-    if (response.data && typeof response.data === 'object' && 'results' in response.data) {
-      return (response.data as any).results;
-    }
-    return response.data;
-  } catch (error) {
-    console.error('Failed to fetch maintenance logs:', error);
-    return [];
   }
+
+  const response = await apiClient.get<PaginatedResponse<MaintenanceLog>>('/maintenance-logs/', { params });
+  return response.data;
 };
 
 export const createLog = async (data: Partial<MaintenanceLog>): Promise<MaintenanceLog> => {

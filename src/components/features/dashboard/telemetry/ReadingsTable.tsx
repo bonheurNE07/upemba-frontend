@@ -29,36 +29,36 @@ export function ReadingsTable({ equipmentId }: ReadingsTableProps) {
            <h3 className="text-sm font-bold tracking-widest uppercase">Historical Logs</h3>
         </div>
         <div className="text-xs text-muted-foreground">
-           Total records: {data.length}
+           Total records: {data.count}
         </div>
       </div>
       
-      <div className="overflow-y-auto overflow-x-auto max-h-[400px] relative">
+      <div className="overflow-x-auto relative">
         <table className="w-full text-sm text-left">
-          <thead className="text-xs text-muted-foreground uppercase bg-muted/10 sticky top-0 shadow-sm z-10">
+          <thead className="text-[10px] text-muted-foreground uppercase bg-muted/10 sticky top-0 shadow-sm z-10">
             <tr>
-              <th className="px-6 py-3 font-bold tracking-wider">Timestamp</th>
-              <th className="px-6 py-3 font-bold tracking-wider text-right">Temperature (°C)</th>
-              <th className="px-6 py-3 font-bold tracking-wider text-right">Voltage (V)</th>
-              <th className="px-6 py-3 font-bold tracking-wider text-right">Vib X</th>
-              <th className="px-6 py-3 font-bold tracking-wider text-right">Vib Y</th>
-              <th className="px-6 py-3 font-bold tracking-wider text-right">Vib Z</th>
+              <th className="px-4 py-3 font-bold tracking-wider">Timestamp</th>
+              <th className="px-4 py-3 font-bold tracking-wider text-right">Temp</th>
+              <th className="px-4 py-3 font-bold tracking-wider text-right">Volt</th>
+              <th className="hidden md:table-cell px-4 py-3 font-bold tracking-wider text-right">Vib X</th>
+              <th className="hidden md:table-cell px-4 py-3 font-bold tracking-wider text-right">Vib Y</th>
+              <th className="hidden md:table-cell px-4 py-3 font-bold tracking-wider text-right">Vib Z</th>
             </tr>
           </thead>
           <tbody>
-            {data.map((reading) => (
+            {data.results.map((reading) => (
               <tr key={reading.id} className="border-b border-border/50 hover:bg-muted/5 transition-colors">
-                <td className="px-6 py-4 font-mono text-muted-foreground">
-                  {format(new Date(reading.timestamp), 'yyyy-MM-dd HH:mm:ss')}
+                <td className="px-4 py-3 font-mono text-muted-foreground whitespace-nowrap">
+                  {format(new Date(reading.timestamp), 'HH:mm:ss')}
                 </td>
-                <td className="px-6 py-4 text-right font-medium text-[#ef4444]">{reading.temperature.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium text-[#3b82f6]">{reading.voltage.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium text-[#a855f7]">{reading.vib_x.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium text-[#eab308]">{reading.vib_y.toFixed(2)}</td>
-                <td className="px-6 py-4 text-right font-medium text-[#22c55e]">{reading.vib_z.toFixed(2)}</td>
+                <td className="px-4 py-3 text-right font-medium text-[#ef4444]">{reading.temperature.toFixed(1)}</td>
+                <td className="px-4 py-3 text-right font-medium text-[#3b82f6]">{reading.voltage.toFixed(1)}</td>
+                <td className="hidden md:table-cell px-4 py-3 text-right font-medium text-[#22c55e]">{reading.vib_x.toFixed(2)}</td>
+                <td className="hidden md:table-cell px-4 py-3 text-right font-medium text-[#eab308]">{reading.vib_y.toFixed(2)}</td>
+                <td className="hidden md:table-cell px-4 py-3 text-right font-medium text-[#a855f7]">{reading.vib_z.toFixed(2)}</td>
               </tr>
             ))}
-            {data.length === 0 && (
+            {data.results.length === 0 && (
               <tr>
                 <td colSpan={6} className="px-6 py-8 text-center text-muted-foreground">
                   No telemetry data found for this equipment.

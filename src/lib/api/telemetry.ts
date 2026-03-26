@@ -1,6 +1,6 @@
-import { strict } from 'assert';
 import { apiClient } from '../axios';
 import { z } from 'zod';
+import { PaginatedResponse } from './types';
 
 export interface HealthStatus {
   id: number;
@@ -65,9 +65,10 @@ export const deleteEquipment = async (id: number): Promise<void> => {
 export const getHealthStatuses = async (
   equipmentId?: number,
   startDate?: string,
-  endDate?: string
-): Promise<HealthStatus[]> => {
-  const params: any = {};
+  endDate?: string,
+  page: number = 1
+): Promise<PaginatedResponse<HealthStatus>> => {
+  const params: any = { page };
   if (equipmentId) params.equipment = equipmentId;
   
   // Start date inherently starts at 00:00:00, which is perfectly inclusive
@@ -83,29 +84,22 @@ export const getHealthStatuses = async (
     }
   }
 
-  const response = await apiClient.get<HealthStatus[]>('/health-status/', { params });
-  
-  if (response.data && typeof response.data === 'object' && 'results' in response.data) {
-    return (response.data as any).results;
-  }
-  return response.data || [];
+  const response = await apiClient.get<PaginatedResponse<HealthStatus>>('/health-status/', { params });
+  return response.data;
 };
 
 // Fetch sensor readings for a specific equipment
 export const getSensorReadings = async (
-  equipmentId: number
-): Promise<SensorReading[]> => {
-  const response = await apiClient.get<SensorReading[]>('/sensor-readings/', {
+  equipmentId: number,
+  page: number = 1
+): Promise<PaginatedResponse<SensorReading>> => {
+  const response = await apiClient.get<PaginatedResponse<SensorReading>>('/sensor-readings/', {
     params: {
       equipment: equipmentId,
       ordering: '-timestamp', // Expect newest first
+      page,
     },
   });
   
-  // In case the backend dynamically switches or wraps it, safely unwrap it
-  if (response.data && typeof response.data === 'object' && 'results' in response.data) {
-    return (response.data as any).results;
-  }
-  
-  return response.data || [];
+  return response.data;
 };

@@ -17,7 +17,7 @@ export function EquipmentMetrics() {
 
   // Calculate nodes currently warning/critical based on health
   const issues = equipments?.filter(e => {
-    const status = healthStatuses?.find(h => h.equipment === e.id)?.status;
+    const status = healthStatuses?.results?.find(h => h.equipment === e.id)?.status;
     return status === 'WARNING' || status === 'CRITICAL';
   }).length || 0;
 

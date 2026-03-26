@@ -16,7 +16,7 @@ export function StatusBadge({ equipmentId }: StatusBadgeProps) {
     return <div className="h-20 w-full md:w-[300px] bg-muted animate-pulse rounded-xl" />;
   }
 
-  const equipmentStatus = statuses?.find((s) => s.equipment === equipmentId);
+  const equipmentStatus = statuses?.results?.find((s) => s.equipment === equipmentId);
 
   if (!equipmentStatus) {
     return (
@@ -54,7 +54,7 @@ export function StatusBadge({ equipmentId }: StatusBadgeProps) {
           <span className="text-2xl font-black tracking-tight text-foreground">
              {(equipmentStatus.anomaly_score * 100).toFixed(1)}%
           </span>
-          <span className="text-xs text-muted-foreground font-medium uppercase tracking-widest">Anomaly Score</span>
+          <span className="text-[10px] text-muted-foreground font-bold uppercase tracking-widest bg-muted/30 px-1.5 py-0.5 rounded leading-none">ML Prediction</span>
         </div>
       </div>
     </div>

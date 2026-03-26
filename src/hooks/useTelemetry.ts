@@ -10,6 +10,7 @@ import {
   SensorReading,
   Equipment,
 } from '@/lib/api/telemetry';
+import { PaginatedResponse } from '@/lib/api/types';
 
 export const POLLING_INTERVAL = 30 * 1000; // 30 seconds
 
@@ -21,18 +22,18 @@ export function useEquipments(search?: string) {
   });
 }
 
-export function useHealthStatuses(equipmentId?: number, startDate?: string, endDate?: string) {
-  return useQuery<HealthStatus[]>({
-    queryKey: ['health-statuses', equipmentId, startDate, endDate],
-    queryFn: () => getHealthStatuses(equipmentId, startDate, endDate),
+export function useHealthStatuses(equipmentId?: number, startDate?: string, endDate?: string, page: number = 1) {
+  return useQuery<PaginatedResponse<HealthStatus>>({
+    queryKey: ['health-statuses', equipmentId, startDate, endDate, page],
+    queryFn: () => getHealthStatuses(equipmentId, startDate, endDate, page),
     refetchInterval: POLLING_INTERVAL,
   });
 }
 
-export function useSensorReadings(equipmentId: number | undefined) {
-  return useQuery<SensorReading[]>({
-    queryKey: ['sensor-readings', equipmentId],
-    queryFn: () => getSensorReadings(equipmentId as number),
+export function useSensorReadings(equipmentId: number | undefined, page: number = 1) {
+  return useQuery<PaginatedResponse<SensorReading>>({
+    queryKey: ['sensor-readings', equipmentId, page],
+    queryFn: () => getSensorReadings(equipmentId as number, page),
     enabled: !!equipmentId,
     refetchInterval: POLLING_INTERVAL,
   });

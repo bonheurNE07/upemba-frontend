@@ -13,14 +13,16 @@ export function TelemetryDashboard() {
     <div className="flex flex-col gap-8 w-full animate-in fade-in duration-500">
       
       {/* Top Controller Bar */}
-      <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-xl border border-border/50 bg-muted/10">
-         <EquipmentSelector 
-           value={selectedEquipment} 
-           onChange={setSelectedEquipment} 
-         />
-         <div className="flex-1" />
+      <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4 p-4 rounded-xl border border-border/50 bg-muted/10">
+         <div className="flex-shrink-0">
+            <EquipmentSelector 
+              value={selectedEquipment} 
+              onChange={setSelectedEquipment} 
+            />
+         </div>
+         <div className="hidden sm:block flex-1" />
          {selectedEquipment && (
-           <StatusBadge equipmentId={selectedEquipment} />
+            <StatusBadge equipmentId={selectedEquipment} />
          )}
       </div>
 

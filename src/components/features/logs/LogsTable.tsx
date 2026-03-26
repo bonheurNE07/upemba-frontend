@@ -1,11 +1,12 @@
 'use client';
 
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useHealthStatuses, useEquipments } from '@/hooks/useTelemetry';
 import { useLogs } from '@/hooks/useLogs';
 import { LogReportDialog } from './LogReportDialog';
+import { Pagination } from '@/components/shared/Pagination';
 import { format } from 'date-fns';
-import { FileText, Eye } from 'lucide-react';
+import { FileText, Eye, Activity } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import { MaintenanceLog } from '@/lib/api/logs';
 
@@ -16,9 +17,19 @@ interface LogsTableProps {
 }
 
 export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
-  const { data: healthStatuses, isLoading: isStatusesLoading } = useHealthStatuses(equipmentId, startDate, endDate);
-  const { data: maintenanceLogs } = useLogs(equipmentId, startDate, endDate);
+  const [page, setPage] = useState(1);
+
+  // Reset page to 1 whenever filters change to prevent "Empty Page" bugs
+  useEffect(() => {
+    setPage(1);
+  }, [equipmentId, startDate, endDate]);
+
+  const { data: healthStatusesResponse, isLoading: isStatusesLoading } = useHealthStatuses(equipmentId, startDate, endDate, page);
+  const { data: maintenanceLogsResponse } = useLogs(equipmentId, startDate, endDate, page);
   const { data: equipments } = useEquipments();
+
+  const healthStatuses = healthStatusesResponse?.results;
+  const maintenanceLogs = maintenanceLogsResponse?.results;
 
   const [formOpen, setFormOpen] = useState(false);
   const [selectedEqId, setSelectedEqId] = useState<number | undefined>(undefined);
@@ -50,8 +61,11 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
       {/* Table Toolbar */}
       <div className="flex items-center justify-between p-4 border-b border-border/50 bg-muted/20">
         <div>
-           <h3 className="text-sm font-bold tracking-widest uppercase">Machine Learning Evaluations</h3>
-           <p className="text-xs text-muted-foreground mt-0.5">Showing {healthStatuses?.length || 0} AI predictions.</p>
+           <h3 className="text-sm font-bold tracking-widest uppercase flex items-center gap-2">
+             <Activity className="w-4 h-4 text-primary" />
+             Predictive Maintenance Analysis
+           </h3>
+           <p className="text-[10px] text-muted-foreground mt-0.5 uppercase tracking-wider font-medium">Showing {healthStatuses?.length || 0} ML-driven failure risk assessments.</p>
         </div>
       </div>
 
@@ -60,11 +74,11 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
         <table className="w-full text-sm text-left border-collapse">
           <thead className="text-xs text-muted-foreground uppercase bg-muted/95 backdrop-blur-sm sticky top-0 z-10 shadow-sm">
             <tr>
-              <th className="px-6 py-4 font-bold tracking-wider">Evaluation Time</th>
-              <th className="px-6 py-4 font-bold tracking-wider">Target Node</th>
-              <th className="px-6 py-4 font-bold tracking-wider">System Status</th>
-              <th className="px-6 py-4 font-bold tracking-wider">Anomaly Score</th>
-              <th className="px-6 py-4 font-bold tracking-wider text-right">Action</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Evaluation Time</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Node</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider">Predicted Health</th>
+              <th className="hidden md:table-cell px-6 py-4 font-bold tracking-wider">Risk Index</th>
+              <th className="px-3 sm:px-6 py-4 font-bold tracking-wider text-right">Action</th>
             </tr>
           </thead>
           <tbody>
@@ -87,15 +101,15 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
 
                 return (
                   <tr key={status.id} className="border-b border-border/50 hover:bg-muted/5 transition-colors group">
-                    <td className="px-6 py-4 font-mono text-muted-foreground whitespace-nowrap">
-                      {format(new Date(status.prediction_timestamp), 'MMM dd, yyyy HH:mm')}
+                    <td className="px-3 sm:px-6 py-4 font-mono text-[10px] sm:text-xs text-muted-foreground whitespace-nowrap">
+                      {format(new Date(status.prediction_timestamp), 'HH:mm')}
                     </td>
-                    <td className="px-6 py-4 font-medium text-foreground whitespace-nowrap">
+                    <td className="px-3 sm:px-6 py-4 font-medium text-foreground whitespace-nowrap text-xs sm:text-sm">
                       {getEquipmentName(status.equipment)}
                     </td>
-                    <td className="px-6 py-4">
+                    <td className="px-3 sm:px-6 py-4">
                       <span className={cn(
-                        "inline-flex items-center px-2 py-0.5 rounded text-xs font-bold tracking-wider uppercase border",
+                        "inline-flex items-center px-1.5 sm:px-2 py-0.5 rounded text-[10px] sm:text-xs font-bold tracking-wider uppercase border",
                         status.status === 'CRITICAL' && "bg-red-500/10 text-red-500 border-red-500/20",
                         status.status === 'WARNING' && "bg-yellow-500/10 text-yellow-500 border-yellow-500/20",
                         status.status === 'NORMAL' && "bg-green-500/10 text-green-500 border-green-500/20"
@@ -103,10 +117,10 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
                         {status.status}
                       </span>
                     </td>
-                    <td className="px-6 py-4 font-mono text-muted-foreground">
+                    <td className="hidden md:table-cell px-6 py-4 font-mono text-muted-foreground text-xs">
                       {status.anomaly_score.toFixed(3)}
                     </td>
-                    <td className="px-6 py-4 text-right">
+                    <td className="px-3 sm:px-6 py-4 text-right">
                       {linkedLog ? (
                         <button 
                           onClick={() => handleViewLog(linkedLog)}
@@ -132,6 +146,13 @@ export function LogsTable({ equipmentId, startDate, endDate }: LogsTableProps) {
           </tbody>
         </table>
       </div>
+
+      <Pagination 
+        currentPage={page}
+        totalPages={Math.ceil((healthStatusesResponse?.count || 0) / 10)}
+        onPageChange={setPage}
+        isLoading={isStatusesLoading}
+      />
 
       {formOpen && (
         <LogReportDialog 

@@ -1,7 +1,6 @@
 'use client';
 
-import { useEquipments } from '@/hooks/useTelemetry';
-import { Filter, Calendar, Cpu } from 'lucide-react';
+import { Filter, Calendar } from 'lucide-react';
 
 interface LogFiltersProps {
   selectedEquipment: number | undefined;
@@ -20,50 +19,28 @@ export function LogFilters({
   endDate,
   setEndDate
 }: LogFiltersProps) {
-  const { data: equipments } = useEquipments();
-
   return (
     <div className="flex flex-col sm:flex-row gap-4 p-4 border border-border/50 rounded-xl bg-muted/10 shadow-sm backdrop-blur-sm">
-      
-      {/* Equipment Dropdown */}
-      <div className="flex-1 space-y-1.5">
-        <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-          <Cpu className="w-3.5 h-3.5" /> Target Node
-        </label>
-        <select
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2"
-          value={selectedEquipment || ""}
-          onChange={(e) => setSelectedEquipment(e.target.value ? Number(e.target.value) : undefined)}
-        >
-          <option value="">All Fleet Equipments</option>
-          {equipments?.map((eq) => (
-            <option key={eq.id} value={eq.id}>
-              {eq.name} ({eq.equipment_type})
-            </option>
-          ))}
-        </select>
-      </div>
-
       {/* Date Range Selectors */}
       <div className="flex-1 space-y-1.5">
-         <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5" /> Start Date
+        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
+          Start Date
         </label>
         <input
           type="date"
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-foreground"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-foreground hover:bg-muted/30"
           value={startDate}
           onChange={(e) => setStartDate(e.target.value)}
         />
       </div>
 
       <div className="flex-1 space-y-1.5">
-        <label className="text-xs font-medium text-muted-foreground uppercase flex items-center gap-1.5">
-          <Calendar className="w-3.5 h-3.5" /> End Date
+        <label className="text-[10px] font-bold text-muted-foreground uppercase tracking-wider ml-1">
+          End Date
         </label>
         <input
           type="date"
-          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-foreground"
+          className="flex h-10 w-full rounded-md border border-input bg-background px-3 py-2 text-sm ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 text-foreground hover:bg-muted/30"
           value={endDate}
           onChange={(e) => setEndDate(e.target.value)}
         />
